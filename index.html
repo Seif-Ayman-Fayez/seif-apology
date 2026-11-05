@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رسالة اعتذار وتقدير | الكابتن محمود رضا</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Gym Industrial Dark & Neon Gold Theme */
+        body {
+            background: linear-gradient(135deg, #090d16 0%, #111827 50%, #030712 100%);
+            overflow-x: hidden;
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+
+        /* Hexagon & Grid Background Pattern */
+        .bg-grid {
+            background-image: radial-gradient(rgba(245, 158, 11, 0.12) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+
+        /* Envelope CSS Structure (Gym Dark Steel Edition) */
+        .envelope-wrapper {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .envelope {
+            width: 320px;
+            height: 210px;
+            background: linear-gradient(145deg, #1f2937, #111827);
+            position: relative;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(245, 158, 11, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        @media (min-width: 640px) {
+            .envelope {
+                width: 420px;
+                height: 260px;
+            }
+        }
+
+        .envelope:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(245, 158, 11, 0.35);
+        }
+
+        /* Envelope Flap */
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 130px solid #374151;
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out, z-index 0.6s ease;
+            z-index: 4;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+        }
+
+        @media (min-width: 640px) {
+            .flap {
+                border-left-width: 210px;
+                border-right-width: 210px;
+                border-top-width: 155px;
+            }
+        }
+
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        /* Envelope Pocket Front */
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            border-left: 160px solid #111827;
+            border-right: 160px solid #111827;
+            border-bottom: 120px solid #030712;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 3;
+        }
+
+        @media (min-width: 640px) {
+            .pocket {
+                border-left-width: 210px;
+                border-right-width: 210px;
+                border-bottom-width: 145px;
+            }
+        }
+
+        /* Letter Inside Envelope Preview */
+        .letter-preview {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 88%;
+            height: 85%;
+            background: #ffffff;
+            border-radius: 10px;
+            transition: transform 0.6s ease-in-out;
+            z-index: 2;
+            padding: 16px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.4);
+        }
+
+        .envelope.open .letter-preview {
+            transform: translateX(-50%) translateY(-120px);
+        }
+
+        /* Seal Gold Dumbbell Badge */
+        .seal {
+            position: absolute;
+            top: 105px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: 2px solid #fef3c7;
+            border-radius: 50%;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 18px rgba(245, 158, 11, 0.5);
+            z-index: 5;
+            transition: opacity 0.4s ease;
+        }
+
+        @media (min-width: 640px) {
+            .seal {
+                top: 130px;
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        .envelope.open .seal {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .gold-glow {
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Custom Scrollbar for Letter */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-grid flex flex-col items-center justify-center p-4 relative min-h-screen">
+
+    <!-- Sound Toggle Button -->
+    <div class="fixed top-4 left-4 z-50">
+        <button id="soundBtn" onclick="toggleGymSound()" class="bg-slate-900/90 backdrop-blur-md hover:bg-slate-800 text-amber-400 p-3 rounded-full shadow-lg border border-amber-500/40 transition duration-300 flex items-center space-x-2 space-x-reverse">
+            <span id="soundIcon">🏋️‍♂️</span>
+            <span id="soundText" class="text-xs font-bold">صوت الصالة</span>
+        </button>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="w-full max-w-2xl flex flex-col items-center justify-center z-10 my-6">
+
+        <!-- 1. ENVELOPE STAGE -->
+        <div id="envelopeStage" class="flex flex-col items-center justify-center transition-all duration-700 w-full">
+            
+            <!-- Header Badges & Title -->
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-500/10 border border-amber-500/40 rounded-full text-amber-400 font-bold text-xs sm:text-sm mb-4">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 6.29 3.43 4.86 2 3.43 3.43 2 4.86 3.43 6.29 2 7.71 3.43 9.14 2 10.57 3.43 12 7 20.57 12 17 13.43 20.57 14.86 22 16.29 20.57 17.71 22 19.14 20.57 20.57 19.14 22 17.71 20.57 16.29z"/></svg>
+                    توضيح واعتذار كابتن الجيم
+                </div>
+                
+                <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight gold-glow">
+                    الكابتن / <span class="text-amber-400">محمود رضا</span>
+                </h1>
+                <p class="text-slate-400 text-sm sm:text-base mt-2">اضغط على الظرف لقراءة الرسالة المهمة ✉️</p>
+            </div>
+
+            <!-- Gym Barbell SVG Art -->
+            <div class="w-full max-w-xs mb-6 text-amber-400 flex justify-center opacity-90">
+                <svg class="w-28 h-12 stroke-current fill-none" stroke-width="2.5" viewBox="0 0 100 40">
+                    <rect x="5" y="10" width="6" height="20" rx="2" fill="currentColor"/>
+                    <rect x="13" y="14" width="5" height="12" rx="1" fill="currentColor"/>
+                    <line x1="18" y1="20" x2="82" y2="20" stroke-width="4" stroke-linecap="round"/>
+                    <rect x="82" y="14" width="5" height="12" rx="1" fill="currentColor"/>
+                    <rect x="89" y="10" width="6" height="20" rx="2" fill="currentColor"/>
+                </svg>
+            </div>
+
+            <!-- Interactive Envelope -->
+            <div class="envelope-wrapper my-2" onclick="openEnvelope()">
+                <div class="envelope" id="mainEnvelope">
+                    <!-- Flap -->
+                    <div class="flap"></div>
+                    
+                    <!-- Dumbbell Seal -->
+                    <div class="seal">
+                        <svg class="w-7 h-7 fill-current text-slate-950" viewBox="0 0 24 24">
+                            <path d="M6 5H4v14h2V5zm14 0h-2v14h2V5zM3 8H1v8h2V8zm18 0h-2v8h2V8zM8 11h8v2H8v-2z"/>
+                        </svg>
+                    </div>
+
+                    <!-- Envelope Pocket -->
+                    <div class="pocket"></div>
+
+                    <!-- Mini Letter Preview Inside -->
+                    <div class="letter-preview flex flex-col items-center justify-center">
+                        <div class="w-16 h-1.5 bg-amber-500 rounded mb-2"></div>
+                        <div class="w-24 h-1 bg-slate-400 rounded mb-1"></div>
+                        <div class="w-20 h-1 bg-slate-300 rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs text-amber-400/90 mt-6 animate-bounce font-bold">👇 اضغط على الظرف لفتح التقرير والاعتذار</p>
+        </div>
+
+        <!-- 2. APOLOGY LETTER CARD -->
+        <div id="letterCard" class="hidden opacity-0 transform translate-y-8 w-full transition-all duration-700 bg-slate-900/95 backdrop-blur-xl rounded-3xl p-6 sm:p-10 shadow-2xl border border-amber-500/30 flex flex-col relative overflow-hidden">
+            
+            <!-- Letter Header -->
+            <div class="text-right border-b border-slate-800 pb-5 mb-5 relative">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-amber-400 tracking-widest uppercase">بيان اعتذار وتعهد مسئولية</span>
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mt-1">الكابتن القدير / محمود رضا 🏋️‍♂️</h2>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-slate-800 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-inner">
+                        <svg class="w-6 h-6 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M14.7 9.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.7-3.7a2 2 0 0 0 0-2.8l-1.6-1.6a2 2 0 0 0-2.8 0l-2.3 2.3"/>
+                            <path d="M9.3 14.7a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l2.3-2.3"/>
+                            <path d="M2.7 21.3a2 2 0 0 0 2.8 0l3.7-3.7a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-3.5 3.5a2 2 0 0 0 0 2.8z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Apology Text -->
+            <div class="space-y-4 text-slate-300 text-sm sm:text-base leading-relaxed text-justify max-h-[52vh] overflow-y-auto custom-scroll pl-2">
+                <p class="font-bold text-white text-base sm:text-lg border-r-4 border-amber-400 pr-3">
+                    كابتن محمود المحترم،،
+                </p>
+                <p>
+                    أكتب لك هذه الرسالة لأعرب عن أسفي الشديد واعتذاري الصادق عما حدث اليوم في الجيم. للأسف حصل تلف في أحد الأجهزة أثناء تمريني، وأود أن أؤكد لك أن الأمر كان <strong class="text-amber-400">غير مقصود تماماً</strong> ونتيجة لقلة التركيز أو حركة خاطئة.
+                </p>
+                <p>
+                    أنا أعلم تماماً مدى حرصك وجهدك الكبيـر في صيانة وتجهيز الجيم ليكون بأفضل صورة لنا جميعاً، وأحترم المكان والتوجيهات التي تضعها دائماً للحفاظ على سلامة الجميع وعلى الأجهزة.
+                </p>
+                <p class="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-xl text-amber-300 font-semibold text-xs sm:text-sm">
+                    ⚠️ <strong>تعهد وانضباط:</strong> أتحمل كامل المسؤولية الأدبية عن هذا الخطأ، وأوعدك بالالتزام التام وأعلى درجات الحرص والتركيز في استخدام كل الأجهزة مستقبلاً.
+                </p>
+
+                <!-- Action Steps Accordion -->
+                <div class="mt-5 pt-4 border-t border-slate-800">
+                    <h3 class="font-bold text-amber-400 text-sm sm:text-base mb-3 flex items-center gap-2">
+                        <span>📋</span> التزامات مستقبلاً (اضغط للاستعراض)
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <!-- Card 1 -->
+                        <details class="group bg-slate-800/80 rounded-xl p-3 cursor-pointer border border-slate-700 hover:border-amber-500/40 transition">
+                            <summary class="font-bold text-slate-200 text-xs sm:text-sm flex justify-between items-center list-none">
+                                <span>1. حرص وتركيز مضاعف في التمرين 🎯</span>
+                                <span class="group-open:rotate-180 transition transform duration-200 text-amber-400">▼</span>
+                            </summary>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-2 pr-2 border-r-2 border-amber-400">
+                                الانتباه التام لأوزان وأسلوب استخدام كل جهاز وعدم التعامل مع أي معدة بتهور.
+                            </p>
+                        </details>
+
+                        <!-- Card 2 -->
+                        <details class="group bg-slate-800/80 rounded-xl p-3 cursor-pointer border border-slate-700 hover:border-amber-500/40 transition">
+                            <summary class="font-bold text-slate-200 text-xs sm:text-sm flex justify-between items-center list-none">
+                                <span>2. التزام تام بتعليمات الاستخدام 🏋️‍♂️</span>
+                                <span class="group-open:rotate-180 transition transform duration-200 text-amber-400">▼</span>
+                            </summary>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-2 pr-2 border-r-2 border-amber-400">
+                                اتباع كل ارشادات السلامة والتوجيهات التي تضعها في الصالة لتجنب أي تكرار مستقبلاً.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="mt-6 pt-5 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-center gap-3">
+                
+                <!-- Forgive Button -->
+                <button onclick="handleAccept()" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black rounded-xl shadow-lg shadow-amber-500/20 transition duration-300 text-center text-xs sm:text-sm">
+                    حصل خير يا بطل 🤝
+                </button>
+
+                <!-- Talk in Gym Button -->
+                <button onclick="handleTalkGym()" class="w-full sm:w-auto px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 transition duration-200 text-center text-xs sm:text-sm">
+                    تعال اتكلم معايا في الجيم 🏋️‍♂️
+                </button>
+
+                <!-- Playful Penalty Button -->
+                <button onclick="handlePushupsPenalty()" class="w-full sm:w-auto px-4 py-3 bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 font-bold rounded-xl border border-rose-800/50 transition duration-200 text-center text-xs sm:text-sm">
+                    غرامة 100 ضغط 😅
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 3. ACCEPTED MODAL -->
+    <div id="acceptModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-amber-500/50 rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl transform scale-90 transition-transform duration-300">
+            <div class="w-20 h-20 bg-amber-500/10 border border-amber-500/40 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
+                🏆
+            </div>
+            <h3 class="text-2xl font-black text-white mb-2">تسلم يا كابتن محمود! 👑</h3>
+            <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+                روحك الرياضية وتفهمك محط كل تقدير. أوعدك المرة الجاية التركيز هيكون 100% والتمرين على أعلى مستوى!
+            </p>
+            <button onclick="closeModal('acceptModal')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl transition shadow-lg">
+                تم يا بطل 🏋️‍♂️
+            </button>
+        </div>
+    </div>
+
+    <!-- 4. TALK IN GYM MODAL -->
+    <div id="talkModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl transform scale-90 transition-transform duration-300">
+            <div class="w-20 h-20 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
+                🤝
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">منتظرك في التمرين القادم</h3>
+            <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+                تمام يا كابتن، سأتواجد في الجيم في ميعاد التمرين للتحدث وتسوية موضوع الجهاز فوراً.
+            </p>
+            <button onclick="closeModal('talkModal')" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-xl border border-amber-500/30 transition">
+                علم وسيتم 👍
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. PUSHUPS PENALTY MODAL -->
+    <div id="pushupsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-rose-500/40 rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl transform scale-90 transition-transform duration-300">
+            <div class="w-20 h-20 bg-rose-500/10 border border-rose-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
+                💪
+            </div>
+            <h3 class="text-xl font-black text-rose-400 mb-2">جاهز للعقاب الرياضي! 😂</h3>
+            <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+                موافق على الـ 100 ضغط كغرامة رياضية وأمامك في الجيم كمان يا كابتن! أهم حاجة الجهاز يتصلح وخاطرك يروق.
+            </p>
+            <button onclick="closeModal('pushupsModal')" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl transition">
+                جاهز للضغط 💪
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* --- 1. Envelope Interaction --- */
+        let isOpened = false;
+        function openEnvelope() {
+            if (isOpened) return;
+            isOpened = true;
+
+            const envelope = document.getElementById('mainEnvelope');
+            const stage = document.getElementById('envelopeStage');
+            const letterCard = document.getElementById('letterCard');
+
+            playGymWhistle();
+
+            envelope.classList.add('open');
+
+            confetti({
+                particleCount: 45,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f59e0b', '#d97706', '#94a3b8', '#ffffff']
+            });
+
+            setTimeout(() => {
+                stage.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    stage.classList.add('hidden');
+                    letterCard.classList.remove('hidden');
+                    void letterCard.offsetWidth;
+                    letterCard.classList.remove('opacity-0', 'translate-y-8');
+                    letterCard.classList.add('opacity-100', 'translate-y-0');
+                }, 400);
+            }, 800);
+        }
+
+        /* --- 2. Action Handlers --- */
+        function handleAccept() {
+            playCelebrateFanfare();
+
+            const duration = 2.5 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 6,
+                    angle: 60,
+                    spread: 60,
+                    origin: { x: 0 },
+                    colors: ['#f59e0b', '#fbbf24', '#ffffff']
+                });
+                confetti({
+                    particleCount: 6,
+                    angle: 120,
+                    spread: 60,
+                    origin: { x: 1 },
+                    colors: ['#f59e0b', '#fbbf24', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+
+            openModal('acceptModal');
+        }
+
+        function handleTalkGym() {
+            openModal('talkModal');
+        }
+
+        function handlePushupsPenalty() {
+            openModal('pushupsModal');
+        }
+
+        /* Modal Helpers */
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const card = modal.querySelector('div');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-90');
+                card.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const card = modal.querySelector('div');
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-90');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        /* --- 3. Web Audio FX --- */
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playGymWhistle() {
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(2200, now);
+            osc.frequency.exponentialRampToValueAtTime(2600, now + 0.15);
+
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.3);
+        }
+
+        function playCelebrateFanfare() {
+            initAudio();
+            if (!audioCtx) return;
+
+            const notes = [300, 450, 600, 900];
+            notes.forEach((freq, i) => {
+                const now = audioCtx.currentTime + (i * 0.08);
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, now);
+
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.3);
+            });
+        }
+
+        function toggleGymSound() {
+            playGymWhistle();
+        }
+    </script>
+</body>
+</html>
